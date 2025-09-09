@@ -1,3 +1,9 @@
+commit 3fd5be1e48460eae5ddc21aadca53d4d4f968e7d
+Author: Alexeev Bronislav <alexeev.dev@mail.ru>
+Date:   Tue Sep 9 21:45:32 2025 +0700
+
+    update config specs
+
 commit a3429af86eb78ae252dab3c2debeab346dfecbde
 Author: Alexeev Bronislav <alexeev.dev@mail.ru>
 Date:   Tue Sep 9 21:29:51 2025 +0700

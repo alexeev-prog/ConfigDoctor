@@ -1,4 +1,4 @@
-# ./configdoctor.toml
+# ./.configdoctor.toml
 # This file uses TOML, which we also lint :)
 
 [general]
