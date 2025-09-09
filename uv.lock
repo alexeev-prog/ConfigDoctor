@@ -163,6 +163,7 @@ name = "configdoctor"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "click" },
     { name = "configparser" },
     { name = "orjson" },
     { name = "pathspec" },
@@ -186,6 +187,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "click", specifier = ">=8.2.1" },
     { name = "configparser", specifier = ">=7.2.0" },
     { name = "orjson", specifier = ">=3.11.3" },
     { name = "pathspec", specifier = ">=0.12.1" },

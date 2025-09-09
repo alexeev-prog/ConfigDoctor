@@ -1,3 +1,9 @@
+commit 3746c53729cb7f64eddb1fd3f9583ab655d12f96
+Author: Alexeev Bronislav <alexeev.dev@mail.ru>
+Date:   Sun Sep 7 19:40:53 2025 +0700
+
+    docs/test/feat: add config reader with tests, improve docs
+
 commit e362d27db57ee587e70b1bd8bfeb5e642d71cca8
 Merge: 57636bc 8befe82
 Author: Alexeev Bronislav <alexeev.dev@mail.ru>
