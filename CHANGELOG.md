@@ -1,3 +1,9 @@
+commit a3429af86eb78ae252dab3c2debeab346dfecbde
+Author: Alexeev Bronislav <alexeev.dev@mail.ru>
+Date:   Tue Sep 9 21:29:51 2025 +0700
+
+    update configdoctor default config
+
 commit 3746c53729cb7f64eddb1fd3f9583ab655d12f96
 Author: Alexeev Bronislav <alexeev.dev@mail.ru>
 Date:   Sun Sep 7 19:40:53 2025 +0700

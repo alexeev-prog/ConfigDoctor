@@ -1,19 +1,19 @@
-# ~/.configdoctor.toml или ./project/.configdoctor.toml
-# Этот файл использует TOML, который мы же и линтим :)
+# ./configdoctor.toml
+# This file uses TOML, which we also lint :)
 
 [general]
-# Уровень детализации вывода: "quiet", "normal", "verbose"
+# Output verbosity level: "quiet", "normal", "verbose"
 verbosity = "normal"
-# Формат вывода: "human" (красивый rich), "json" (для CI), "github" (для GitHub Actions annotations)
-output_format = "human"
-# Использовать цветной вывод (только для "human")
+# Output format: "human" (pretty rich), "json" (for CI), "github" (for GitHub Actions annotations)
+output_format = ["human", "json"]
+# Use colored output (only for "human" format)
 color = true
-# Автоматически применять исправления, где это возможно (например, форматирование)
+# Automatically apply fixes where possible (e.g., formatting)
 apply_fixes = false
 
-# Глобальные настройки включения/исключения файлов
+# Global file inclusion/exclusion settings
 [files]
-# Включить эти паттерны (glob-шаблоны)
+# Include these patterns (glob patterns)
 include = [
     "**/*.yaml",
     "**/*.yml",
@@ -25,7 +25,7 @@ include = [
     "**/*.ini",
     "**/nginx.conf",
 ]
-# Исключить эти паттерны
+# Exclude these patterns
 exclude = [
     "**/node_modules/**",
     "**/.git/**",
@@ -34,102 +34,102 @@ exclude = [
     "**/tmp/**",
 ]
 
-# Настройки для встроенных парсеров
+# Built-in parser settings
 [parsers]
-# Использовать безопасный загрузчик YAML (только простые типы данных, не вызовет конструкторов Python)
+# Use safe YAML loader (only simple data types, won't call Python constructors)
 yaml_safe_load = true
-# Разрешать дубликаты ключей в YAML (обычно это ошибка)
+# Allow duplicate keys in YAML (usually an error)
 yaml_allow_duplicates = false
-# Разрешать использование анкоров и алиасов в YAML
+# Allow anchors and aliases in YAML
 yaml_allow_anchors = true
 
-# Настройка правил и плагинов
-# Этот раздел определяет, какие правила активны и с какими параметрами
+# Rules and plugins configuration
+# This section defines which rules are active and with which parameters
 [rules]
 
-  # Глобальное отключение правил по их ID
+  # Global rule disabling by ID
   disable = [
-    "yaml::truthy::use-boolean", # Слишком строго для некоторых конфигов
-    "dockerfile::recommended::no-root", # Исключение для специфичного образа
+    "yaml::truthy::use-boolean", # Too strict for some configs
+    "dockerfile::recommended::no-root", # Exception for specific image
   ]
 
-  # Глобальное включение определенных правил (имеет смысл, если по умолчанию они выключены)
+  # Global rule enabling (useful for rules disabled by default)
   enable = [
-    "general::file-naming::kebab-case", # Включить дополнительное правило
+    "general::file-naming::kebab-case", # Enable additional rule
   ]
 
-  # Настройка параметров для конкретных правил
+  # Rule-specific parameter configuration
   [rules.options]
 
-    # Правило: Длина строки не должна превышать 120 символов
+    # Rule: Line length should not exceed maximum characters
     [rules.options."general::format::line-length"]
-    max = 120 # Изменить максимальную длину строки
-    ignore_comments = true # Игнорировать строки комментариев
+    max = 120 # Change maximum line length
+    ignore_comments = true # Ignore comment lines
 
-    # Правило: Проверка на использование последнего тега в Dockerfile
+    # Rule: Avoid using latest tag in Dockerfile
     [rules.options."dockerfile::security::avoid-latest-tag"]
-    # Список исключений (образы, где latest допустим)
+    # Exception list (images where latest is allowed)
     allowed_images = ["nginx", "alpine", "redis"]
 
-    # Правило: Проверка формата версий в docker-compose
+    # Rule: Version pinning check in docker-compose
     [rules.options."compose::best-practices::pin-version"]
-    # Режим проверки: "error" - ошибка, "warning" - предупреждение, "off" - выключено
+    # Validation mode: "error" - error, "warning" - warning, "off" - disabled
     mode = "warning"
-    # Игнорировать определенные сервисы
+    # Ignore specific services
     ignore_services = ["local-dev-service"]
 
-    # Правило: Проверка наличия обязательных полей в конфиге приложения
+    # Rule: Required fields check for application config
     [rules.options."custom-myapp::required-fields"]
-    # Этот плагин и правило будут загружены из custom_path
+    # This plugin and rule will be loaded from custom_path
     required_fields = ["version", "api_key", "environment"]
 
-# Настройки плагинов (загрузка и поведение)
+# Plugin settings (loading and behavior)
 [plugins]
-  # Пути к кастомным плагинам (абсолютные или относительные от корня проекта)
+  # Paths to custom plugins (absolute or relative to project root)
   custom_paths = ["./devops/configdoctor_plugins"]
 
-  # Настройки для конкретных плагинов
+  # Plugin-specific settings
   [plugins.dockerfile]
-    # Разрешать определённые команды RUN, которые обычно запрещены (например, apt-get upgrade)
+    # Allow specific RUN commands that are normally prohibited (e.g., apt-get upgrade)
     allowed_run_commands = ["apt-get update && apt-get install -y my-package"]
 
   [plugins.yaml]
-    # Требовать явного указания версии YAML в документе (например, %YAML 1.2)
+    # Require explicit YAML version directive in documents (e.g., %YAML 1.2)
     require_explicit_version = false
 
   [plugins.compose]
-    # Проверять на соответствие определённой версии docker-compose спецификации
+    # Validate against specific docker-compose specification version
     target_version = "3.8"
 
-# Настройки вывода (Reporting)
+# Output settings (Reporting)
 [output]
-  # Группировать ошибки по файлам ("file") или по типу правила ("rule")
+  # Group errors by: "file" or by rule type ("rule")
   group_by = "file"
 
-  # Настройки для формата "human"
+  # Settings for "human" format
   [output.human]
-    # Показывать ссылку на документацию по правилу
+    # Show rule documentation link
     show_documentation_link = true
-    # Показывать пример исправления
+    # Show fix suggestion
     show_suggestion = true
 
-  # Настройки для формата "json"
+  # Settings for "json" format
   [output.json]
-    # Включать в вывод исходный код строки, где найдена ошибка
+    # Include source code of problematic line in output
     include_source_code = false
-    # Делать вывод "красивым" (с отступами) или компактным
+    # Pretty-print output (with indentation) or compact
     pretty = true
 
-  # Настройки для формата "github"
+  # Settings for "github" format
   [output.github]
-    # Использовать workflow commands для вывода
+    # Use workflow commands for output
     use_workflow_commands = true
 
-# Профили - предустановленные наборы правил (можно активировать через --profile)
+# Profiles - predefined rule sets (activatable via --profile)
 [profiles]
 
   [profiles.strict]
-    description = "Максимально строгий набор правил для продакшена"
+    description = "Maximum strict rule set for production"
     enable = [
       "dockerfile::security::*",
       "compose::best-practices::*",
@@ -140,28 +140,28 @@ yaml_allow_anchors = true
       max = 100
 
   [profiles.dev]
-    description = "Набор для разработки, пропускающий некоторые предупреждения"
+    description = "Development profile with relaxed warnings"
     disable = [
       "dockerfile::security::avoid-latest-tag",
       "compose::best-practices::pin-version",
     ]
 
-# Переопределения на основе пути к файлу
-# Позволяет задать особые правила для определённых путей
+# File path-based overrides
+# Allows special rules for specific paths
 [[overrides]]
   files = ["**/dev/**", "**/staging/**"]
   [overrides.rules]
     disable = [
-      "yaml::security::no-ssh-urls", # В staging могут быть свои репозитории
+      "yaml::security::no-ssh-urls", # Staging may have custom repositories
     ]
     [overrides.rules.options]
       [overrides.rules.options."dockerfile::security::avoid-latest-tag"]
-      mode = "warning" # В staging только предупреждение
+      mode = "warning" # Only warning in staging
 
 [[overrides]]
   files = ["**/production/**"]
   [overrides.rules]
-    enable = ["*::security::*"] # Включаем все security правила
+    enable = ["*::security::*"] # Enable all security rules
     [overrides.rules.options]
       [overrides.rules.options."dockerfile::security::avoid-latest-tag"]
-      mode = "error" # В production это строгая ошибка
+      mode = "error" # Strict error in production
