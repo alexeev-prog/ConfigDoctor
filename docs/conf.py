@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.abspath("../src/configdoctor"))
 sys.path.insert(0, os.path.abspath("src/configdoctor"))
 
 project = "configdoctor"
-author = "name"
+author = "alexeev-prog"
 version = "0.1.0"
 release = "0.1"
 project_copyright = "2025, Alexeev Bronislaw"
