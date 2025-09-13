@@ -6,7 +6,6 @@ def cli():
     """Software for quickly creating and building C/C++ projects."""
 
 
-
 @cli.command()
 @click.argument("target", nargs=-1, required=True)
 def check(target: list):
