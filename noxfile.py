@@ -18,7 +18,7 @@ def test(session):
     session.run(
         "pytest",
         "tests/",
-        "--cov=src/configdoctor",
+        "--cov=configdoctor",
         "--cov-fail-under=85",  # 85% coverage
         "-v",  # verbose output
         "-s",  # don't capture output

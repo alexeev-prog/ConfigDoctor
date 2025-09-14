@@ -13,6 +13,15 @@ configdoctor.config\_reader module
    :show-inheritance:
    :undoc-members:
 
+configdoctor.exceptions module
+------------------------------
+
+.. automodule:: configdoctor.exceptions
+   :members:
+   :private-members:
+   :show-inheritance:
+   :undoc-members:
+
 Module contents
 ---------------
 
