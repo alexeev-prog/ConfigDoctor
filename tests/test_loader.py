@@ -15,6 +15,7 @@ from configdoctor.config_reader import (
     TOMLConfig,
     YAMLConfig,
     detect_config_type_by_extension,
+    get_config_provider,
 )
 from configdoctor.exceptions import ConfigError as BaseConfigError
 
@@ -131,6 +132,12 @@ class TestYAMLConfig:
             with raises(ConfigError, match="YAML support requires"):
                 config.get_loaded_config()
 
+    def test_yaml_empty_content(self, tmp_path):
+        file = tmp_path / "test.yaml"
+        file.write_text("# Just a comment")
+        config = YAMLConfig(file)
+        assert config.get_loaded_config() == {}
+
 
 class TestConfigFactory:
     @pytest.mark.parametrize(
@@ -216,6 +223,43 @@ class TestConfigurationProvider:
         provider = ConfigurationProvider(config_file)
         assert isinstance(provider(), AbstractConfig)
 
+    def test_stop_watching(self, config_file):
+        with patch("configdoctor.config_reader.Observer") as mock_observer:
+            provider = ConfigurationProvider(config_file, watch_for_changes=True)
+            provider.stop_watching()
+            mock_observer.return_value.stop.assert_called_once()
+            mock_observer.return_value.join.assert_called_once()
+
+    def test_auto_reload_false(self, config_file):
+        provider = ConfigurationProvider(config_file, auto_reload=False)
+        assert provider.auto_reload is False
+
+    def test_watchdog_initialized(self, config_file):
+        with patch("configdoctor.config_reader.Observer") as mock_observer:
+            ConfigurationProvider(config_file, watch_for_changes=True)
+            mock_observer.assert_called_once()
+            mock_observer.return_value.start.assert_called_once()
+
+    def test_without_pydantic(self, config_file):
+        with (
+            patch("configdoctor.config_reader.BaseModel", object),
+            patch("configdoctor.config_reader.ValidationError", Exception),
+        ):
+            provider = ConfigurationProvider(config_file)
+            assert provider is not None
+
+    def test_pydantic_validation_error(self, config_file):
+        with (
+            patch("configdoctor.config_reader.BaseModel", object),
+            patch("configdoctor.config_reader.ValidationError", Exception),
+        ):
+            with raises(Exception):
+                ConfigurationProvider(config_file, validation_model=object)
+
+    def test_stop_watching_without_observer(self, config_file):
+        provider = ConfigurationProvider(config_file, watch_for_changes=False)
+        provider.stop_watching()  # Should not raise an exception
+
 
 class TestConfigFileEventHandler:
     def test_event_handler_callbacks(self):
@@ -234,14 +278,37 @@ class TestConfigFileEventHandler:
         event = Mock()
         event.src_path = "/test/config.yaml"
 
-        # Test successful reload
         handler.on_modified(event)
         change_callback.assert_called_once_with(provider)
 
-        # Test reload with error
         provider.reload.side_effect = Exception("Reload error")
         handler.on_modified(event)
         error_callback.assert_called_once_with(provider, provider.reload.side_effect)
+
+    def test_event_handler_without_callbacks(self):
+        provider = Mock()
+        provider.config = Mock()
+        provider.config.config_path = Path("/test/config.yaml")
+        provider.reload = Mock()
+
+        handler = ConfigFileEventHandler(provider)
+        event = Mock()
+        event.src_path = "/test/config.yaml"
+
+        handler.on_modified(event)
+
+    def test_event_handler_exception_without_error_callback(self):
+        provider = Mock()
+        provider.config = Mock()
+        provider.config.config_path = Path("/test/config.yaml")
+        provider.reload = Mock(side_effect=Exception("Reload error"))
+
+        handler = ConfigFileEventHandler(provider)  # без error_callback
+        event = Mock()
+        event.src_path = "/test/config.yaml"
+
+        # Должен просто игнорировать исключение, так как error_callback не установлен
+        handler.on_modified(event)
 
 
 class TestGetConfigProvider:
@@ -250,6 +317,16 @@ class TestGetConfigProvider:
         file = tmp_path / "config.json"
         file.write_text('{"test": "value"}')
         return file
+
+    def test_without_cache(self, config_file):
+        provider1 = get_config_provider(config_file)
+        provider2 = get_config_provider(config_file)
+        assert provider1 is not provider2
+
+    def test_with_different_params(self, config_file):
+        provider1 = get_config_provider(config_file, watch_for_changes=True)
+        provider2 = get_config_provider(config_file, watch_for_changes=False)
+        assert provider1 is not provider2
 
 
 class TestExceptions:

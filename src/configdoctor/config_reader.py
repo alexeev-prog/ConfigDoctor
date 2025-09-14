@@ -2,7 +2,6 @@ import json
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from enum import Enum
-from functools import lru_cache
 from pathlib import Path
 from typing import Any, Generic, TypeVar, overload
 
@@ -534,7 +533,6 @@ def get_config_provider(
     validation_model: type[M] | None = None,
     *,
     watch_for_changes: bool = False,
-    use_cache: bool = True,
     on_config_change: Callable[[ConfigurationProvider], None] | None = None,
     on_config_error: Callable[[ConfigurationProvider, Exception], None] | None = None,
     auto_reload: bool = True,
@@ -546,7 +544,6 @@ def get_config_provider(
         config_path: Path to the configuration file
         validation_model: Pydantic model for validation
         watch_for_changes: Whether to watch for file changes
-        use_cache: Whether to use cached provider instance
         on_config_change: Callback to execute after successful config reload
         on_config_error: Callback to execute when config reload fails
         auto_reload: Whether to automatically reload config on file changes
@@ -555,35 +552,11 @@ def get_config_provider(
         ConfigurationProvider: Configuration provider instance
 
     """
-    if not use_cache:
-        return ConfigurationProvider(
-            config_path,
-            validation_model,
-            watch_for_changes=watch_for_changes,
-            on_config_change=on_config_change,
-            on_config_error=on_config_error,
-            auto_reload=auto_reload,
-        )
-
-    cache_key = (
-        str(config_path),
+    return ConfigurationProvider(
+        config_path,
         validation_model,
-        watch_for_changes,
-        on_config_change,
-        on_config_error,
-        auto_reload,
+        watch_for_changes=watch_for_changes,
+        on_config_change=on_config_change,
+        on_config_error=on_config_error,
+        auto_reload=auto_reload,
     )
-
-    @lru_cache(maxsize=32)
-    def _cached_provider(*args) -> ConfigurationProvider:
-        path, model, watch, change_cb, error_cb, reload = args
-        return ConfigurationProvider(
-            path,
-            model,
-            watch_for_changes=watch,
-            on_config_change=change_cb,
-            on_config_error=error_cb,
-            auto_reload=reload,
-        )
-
-    return _cached_provider(*cache_key)

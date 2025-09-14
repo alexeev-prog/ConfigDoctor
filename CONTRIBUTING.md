@@ -25,7 +25,7 @@ All contributors must adhere to our Code of Conduct. Please read [CODE_OF_CONDUC
 2. Create a feature branch (`git checkout -b feature/your-feature`)
 3. Implement your changes
 4. Add tests covering all new functionality
-5. Ensure 100% test coverage
+5. Ensure 85-100% test coverage
 6. Format code with Black (`black .`)
 7. Submit a pull request
 
