@@ -293,8 +293,9 @@ class ConfigFileEventHandler(FileSystemEventHandler):
         self,
         config_provider: "ConfigurationProvider",
         on_config_change: Callable[["ConfigurationProvider"], None] | None = None,
-        on_config_error: Callable[["ConfigurationProvider", Exception], None]
-        | None = None,
+        on_config_error: (
+            Callable[["ConfigurationProvider", Exception], None] | None
+        ) = None,
     ):
         """
         Initialize a Config File Event handler.
@@ -334,8 +335,9 @@ class ConfigurationProvider(Generic[M]):
         *,
         watch_for_changes: bool = False,
         on_config_change: Callable[["ConfigurationProvider"], None] | None = None,
-        on_config_error: Callable[["ConfigurationProvider", Exception], None]
-        | None = None,
+        on_config_error: (
+            Callable[["ConfigurationProvider", Exception], None] | None
+        ) = None,
         auto_reload: bool = True,
     ):
         """

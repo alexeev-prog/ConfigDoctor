@@ -1,3 +1,15 @@
+commit 94cb3622d1f3cffce960d0111ab3c29bcb41260e
+Author: Alexeev Bronislav <alexeev.dev@mail.ru>
+Date:   Sun Sep 14 20:46:48 2025 +0700
+
+    update noxfile and docs
+
+commit 90543b3646d7ae9d0378de7f0db99a7d7818db6d
+Author: Alexeev Bronislav <alexeev.dev@mail.ru>
+Date:   Sun Sep 14 20:44:24 2025 +0700
+
+    update config reader tests
+
 commit 3ef256cf72c37be4a510252c57e2168c7e2de6d1
 Author: Alexeev Bronislav <alexeev.dev@mail.ru>
 Date:   Sun Sep 14 01:05:29 2025 +0700
