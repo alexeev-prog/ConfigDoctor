@@ -5,31 +5,13 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Generic, TypeVar, overload
 
+import toml
+import yaml
+from pydantic import BaseModel, ValidationError
+from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
+
 from .exceptions import ConfigError
-
-try:
-    import toml
-except ImportError:
-    toml = None
-
-try:
-    import yaml
-except ImportError:
-    yaml = None
-
-try:
-    from pydantic import BaseModel, ValidationError
-except ImportError:
-    BaseModel = object
-    ValidationError = Exception
-
-try:
-    from watchdog.events import FileSystemEventHandler
-    from watchdog.observers import Observer
-except ImportError:
-    FileSystemEventHandler = object
-    Observer = None
-
 
 T = TypeVar("T")
 M = TypeVar("M", bound=BaseModel)
