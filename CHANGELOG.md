@@ -1,3 +1,9 @@
+commit e1a488b0fb94d69c111708315ea1a74b8d1cdbd0
+Author: Alexeev Bronislav <alexeev.dev@mail.ru>
+Date:   Mon Sep 29 00:38:40 2025 +0700
+
+    update config reader
+
 commit 7f9ce00aec46d97466c822c860fd2f3cc661df8c
 Author: Alexeev Bronislav <alexeev.dev@mail.ru>
 Date:   Wed Sep 17 21:08:20 2025 +0700
